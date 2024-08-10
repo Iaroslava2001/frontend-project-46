@@ -4,6 +4,8 @@ const program = new Command();
 import yaml from 'js-yaml';
 import * as fs from 'node:fs';
 import path from 'node:path';
+import _ from 'lodash';
+
 
 program
   .version('0.0.1', '-V, --version', 'output the version number')
@@ -32,10 +34,10 @@ program
     const keys = _.sortBy(_.union(Object.keys(data1), Object.keys(data2)));
     const diff = keys.map((key) => {
       if (!_.has(data2, key)) {
-        return `  -${key}: ${data1}[key]`;
+        return `  - ${key}: ${data1[key]}`;
       }
       if (!_.has(data1, key)) {
-        return `  +${key}: ${data2}[key]`;
+        return `  + ${key}: ${data2[key]}`;
       }
       if (data1[key] !== data2[key]) {
         return [
@@ -43,9 +45,9 @@ program
           `  + ${key}: ${data2[key]}`,
         ].join('\n');
       }
-      return `  ${key}: ${data1[key]}`;
+      return `    ${key}: ${data1[key]}`;
     });
-    return `{\n${diff.join('\n')}\n}`;
+    console.log(`{\n${diff.join('\n')}\n}`);
   
   });
 program.parse();
