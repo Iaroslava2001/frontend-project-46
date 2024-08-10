@@ -25,7 +25,27 @@ program
           throw new Error(`Unknown file extension: '${fileExtension}'!`);
       }
     };
-    console.log('Path to first file:', parse(getFileData(filepath1)), getFileExtension(filepath1));
-    console.log('Path to second file:', parse(getFileData(filepath2)), getFileExtension(filepath2));
+    const data1 = parse(getFileData(filepath1), getFileExtension(filepath1));
+    const data2 = parse(getFileData(filepath2), getFileExtension(filepath2));
+    
+    // Получение всех ключей из обоих объектов и их сортировка
+    const keys = _.sortBy(_.union(Object.keys(data1), Object.keys(data2)));
+    const diff = keys.map((key) => {
+      if (!_.has(data2, key)) {
+        return `  -${key}: ${data1}[key]`;
+      }
+      if (!_.has(data1, key)) {
+        return `  +${key}: ${data2}[key]`;
+      }
+      if (data1[key] !== data2[key]) {
+        return [
+          `  - ${key}: ${data1[key]}`,
+          `  + ${key}: ${data2[key]}`,
+        ].join('\n');
+      }
+      return `  ${key}: ${data1[key]}`;
+    });
+    return `{\n${diff.join('\n')}\n}`;
+  
   });
 program.parse();
