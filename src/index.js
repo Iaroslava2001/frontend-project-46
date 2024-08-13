@@ -1,7 +1,8 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
-import parse from './parsers.js';
 import _ from 'lodash';
+import parse from './parsers.js';
+
 
 const getFileData = (filePath) => fs.readFileSync(filePath, 'utf8');
 const getFileExtension = (filePath) => path.extname(filePath).split('.')[1];

@@ -17,7 +17,7 @@ const FILE2_JSON = getFixturePath('file2.json');
 const RESULT = getFixturePath('result.txt');
 
 const testData = [
-  [FILE1_JSON, FILE2_JSON, RESULT]
+  [FILE1_JSON, FILE2_JSON, RESULT],
 ];
 
 test.each(testData)('gendiff', (file1, file2, expected) => {
