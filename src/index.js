@@ -1,31 +1,23 @@
 import * as fs from 'node:fs';
 import path from 'node:path';
-import _ from 'lodash';
+import { cwd } from 'node:process';
 import parse from './parsers.js';
+import buildAstTree from './buildAstTree.js';
+import formater from './formatters/index.js';
 
 const getFileData = (filePath) => fs.readFileSync(filePath, 'utf8');
 const getFileExtension = (filePath) => path.extname(filePath).split('.')[1];
 
-const genDiff = (filepath1, filepath2) => {
-  const data1 = parse(getFileData(filepath1), getFileExtension(filepath1));
-  const data2 = parse(getFileData(filepath2), getFileExtension(filepath2));
+const genDiff = (filePath1, filePath2, formatName = 'stylish') => {
+  const currentDir = cwd();
+  const currentPath1 = path.resolve(currentDir, filePath1);
+  const currentPath2 = path.resolve(currentDir, filePath2);
 
-  const keys = _.sortBy(_.union(Object.keys(data1), Object.keys(data2)));
-  const diff = keys.map((key) => {
-    if (!_.has(data2, key)) {
-      return `  - ${key}: ${data1[key]}`;
-    }
-    if (!_.has(data1, key)) {
-      return `  + ${key}: ${data2[key]}`;
-    }
-    if (data1[key] !== data2[key]) {
-      return [
-        `  - ${key}: ${data1[key]}`,
-        `  + ${key}: ${data2[key]}`,
-      ].join('\n');
-    }
-    return `    ${key}: ${data1[key]}`;
-  });
-  return (`{\n${diff.join('\n')}\n}`);
+  const tree1 = parse(getFileData(currentPath1), getFileExtension(currentPath1));
+  const tree2 = parse(getFileData(currentPath2), getFileExtension(currentPath2));
+
+  const astTree = buildAstTree(tree1, tree2);
+
+  return formater(astTree, formatName);
 };
 export default genDiff;
