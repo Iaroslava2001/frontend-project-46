@@ -22,8 +22,10 @@ make install
 ```
 
 ### Minimum requirements:
+```
 Node: 20.8.0
 npm: 10.1.0
+```
 
 ### Run:
 ```

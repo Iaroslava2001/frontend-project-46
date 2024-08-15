@@ -22,8 +22,6 @@ export default [
         ...globals.jest,
       },
       parserOptions: {
-        // Eslint doesn't supply ecmaVersion in `parser.js` `context.parserOptions`
-        // This is required to avoid ecmaVersion < 2015 error or 'import' / 'export' error
         ecmaVersion: 'latest',
         sourceType: 'module',
       },

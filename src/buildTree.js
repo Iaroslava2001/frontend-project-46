@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const buildAstTree = (tree1, tree2) => {
+const builTree = (tree1, tree2) => {
   const keys = _.sortBy(_.union(Object.keys(tree1), Object.keys(tree2)));
   const result = keys.map((key) => {
     if (!Object.hasOwn(tree1, key)) {
@@ -13,7 +13,7 @@ const buildAstTree = (tree1, tree2) => {
       if (_.isPlainObject(tree1[key]) && _.isPlainObject(tree2[key])) {
         return {
           key,
-          value: buildAstTree(tree1[key], tree2[key]),
+          value: builTree(tree1[key], tree2[key]),
           status: 'withChildren',
         };
       }
@@ -29,4 +29,4 @@ const buildAstTree = (tree1, tree2) => {
   return result;
 };
 
-export default buildAstTree;
+export default builTree;
