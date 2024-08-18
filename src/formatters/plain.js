@@ -11,7 +11,7 @@ const plain = (astTree) => {
   const iter = (currentValue, pathToValue) => {
     const result = currentValue.flatMap((item) => {
       const {
-        key, value, changedValue, status,
+        key, value, status,
       } = item;
       const currentPathToValue = pathToValue === '' ? `${key}` : `${pathToValue}.${key}`;
       switch (status) {
@@ -19,8 +19,10 @@ const plain = (astTree) => {
           return `Property '${currentPathToValue}' was added with value: ${stringify(value)}`;
         case 'deleted':
           return `Property '${currentPathToValue}' was removed`;
-        case 'changed':
+        case 'changed': {
+          const { changedValue } = item;
           return `Property '${currentPathToValue}' was updated. From ${stringify(value)} to ${stringify(changedValue)}`;
+        }
         case 'withChildren':
           return iter(value, currentPathToValue);
         case 'unchanged':

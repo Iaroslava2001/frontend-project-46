@@ -10,26 +10,28 @@ const formatNode = (node, depth) => {
     return node;
   }
 
+  const stringify = (key, value, currentDepth, sign = ' ') => `${getIndent(currentDepth, 2)}${sign} ${key}: ${formatNode(value, currentDepth + 1)}`;
+
   const currentIndent = getIndent(depth);
   const bracketIndent = getIndent(depth, SPACE_COUNT);
 
   const lines = _.isArray(node)
     ? node.map((item) => {
-      const {
-        key, value, changedValue, status,
-      } = item;
+      const { key, value, status } = item;
 
       switch (status) {
         case 'added':
-          return `${getIndent(depth, 2)}+ ${key}: ${formatNode(value, depth + 1)}`;
+          return stringify(key, value, depth, '+');
         case 'deleted':
-          return `${getIndent(depth, 2)}- ${key}: ${formatNode(value, depth + 1)}`;
-        case 'changed':
-          return `${getIndent(depth, 2)}- ${key}: ${formatNode(value, depth + 1)}\n${getIndent(depth, 2)}+ ${key}: ${formatNode(changedValue, depth + 1)}`;
+          return stringify(key, value, depth, '-');
+        case 'changed': {
+          const { changedValue } = item;
+          return `${stringify(key, value, depth, '-')}\n${stringify(key, changedValue, depth, '+')}`;
+        }
         case 'withChildren':
-          return `${getIndent(depth, 2)}  ${key}: ${formatNode(value, depth + 1)}`;
+          return stringify(key, value, depth, ' ');
         case 'unchanged':
-          return `${getIndent(depth, 2)}  ${key}: ${value}`;
+          return stringify(key, value, depth, ' ');
         default:
           throw new Error(`Unknown status: '${status}'!`);
       }
